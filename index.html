@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>UNDETALLIS — Imágenes Aleatorias Sin Repetir</title>
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3GFTY2SWSM"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-3GFTY2SWSM');
+</script>
+
+<style>
+    body {
+        margin: 0;
+        overflow: hidden;
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: black;
+        font-family: "Arial", sans-serif;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+    #fondo {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 110%;
+        width: 110%;
+        background-image: url('assets/fondo.jpg');
+        background-size: cover;
+        background-position: center;
+        animation: fondoMovimiento 2.5s infinite ease-in-out alternate;
+        filter: blur(4px) brightness(0.8);
+        z-index: -1;
+    }
+    @keyframes fondoMovimiento {
+        0% { transform: scale(1.02) translate(-8px, -5px); }
+        100% { transform: scale(1.06) translate(6px, 5px); }
+    }
+    @keyframes rebote {
+        0%   { opacity: 0; transform: scale(0.6); filter: blur(4px); }
+        40%  { opacity: 1; transform: scale(1.08); }
+        70%  { transform: scale(0.94); }
+        100% { transform: scale(1); filter: blur(0); }
+    }
+
+    /* ----- CONTENEDOR DE LA IMAGEN ----- */
+    #imgBox {
+        max-width: 90%;
+        max-height: 80%;
+        padding: 20px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 0 30px rgba(0,0,0,0.45);
+        animation: rebote 0.8s ease-out;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    #imgBox img {
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 14px;
+        object-fit: contain;
+    }
+</style>
+
+<!-- ===================== -->
+<!--   FIREBASE + LÓGICA   -->
+<!-- ===================== -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBJjxw3ONW_WvUgTKeHALYdmUjTOXB0gFs",
+      authDomain: "spicy-da7d7.firebaseapp.com",
+      projectId: "spicy-da7d7",
+      storageBucket: "spicy-da7d7.firebasestorage.app",
+      messagingSenderId: "8855941044",
+      appId: "1:8855941044:web:3607c0d43293fbc6490ce1",
+      measurementId: "G-K5GK8HR3BE"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    /* ------------------------------------ */
+    /*  AQUI PONES TUS 50 IMÁGENES EN ASSETS */
+    /* ------------------------------------ */
+    const imagenes = [
+        "assets/img1.jpg",
+        "assets/img2.jpg",
+        "assets/img3.jpg",
+        "assets/img4.jpg",
+        "assets/img5.jpg",
+        "assets/img6.jpg",
+        "assets/img7.jpg",
+        "assets/img8.jpg",
+        "assets/img9.jpg",
+        "assets/img10.jpg",
+        "assets/img11.jpg",
+        "assets/img12.jpg",
+        "assets/img13.jpg",
+        "assets/img14.jpg",
+        "assets/img15.jpg",
+        "assets/img16.jpg",
+        "assets/img17.jpg",
+        "assets/img18.jpg",
+        "assets/img19.jpg",
+        "assets/img20.jpg",
+        "assets/img21.jpg",
+        "assets/img22.jpg",
+        "assets/img23.jpg",
+        "assets/img24.jpg",
+        "assets/img25.jpg",
+        "assets/img26.jpg",
+        "assets/img27.jpg",
+        "assets/img28.jpg",
+        "assets/img29.jpg",
+        "assets/img30.jpg",
+        "assets/img31.jpg",
+        "assets/img32.jpg",
+        "assets/img33.jpg",
+        "assets/img34.jpg",
+        "assets/img35.jpg",
+        "assets/img36.jpg",
+        "assets/img37.jpg",
+        "assets/img38.jpg",
+        "assets/img39.jpg",
+        "assets/img40.jpg",
+        "assets/img41.jpg",
+        "assets/img42.jpg",
+        "assets/img43.jpg",
+        "assets/img44.jpg",
+        "assets/img45.jpg",
+        "assets/img46.jpg",
+        "assets/img47.jpg",
+        "assets/img48.jpg",
+        "assets/img49.jpg",
+        "assets/img50.jpg"
+    ];
+
+    /* Mezclar */
+    function mezclar(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    async function cargarImagen() {
+        const box = document.getElementById("imgBox");
+
+        const ordenRef = ref(db, "orden_img");
+        const posRef   = ref(db, "pos_img");
+
+        const ordenSnap = await get(ordenRef);
+        const posSnap   = await get(posRef);
+
+        let orden = ordenSnap.exists() ? ordenSnap.val() : null;
+        let pos = posSnap.exists() ? posSnap.val() : 0;
+
+        if (!orden || orden.length !== imagenes.length) {
+            orden = [...Array(imagenes.length).keys()];
+            mezclar(orden);
+            await set(ordenRef, orden);
+            pos = 0;
+            await set(posRef, 0);
+        }
+
+        const ruta = imagenes[orden[pos]];
+
+        box.innerHTML = `<img src="${ruta}" alt="imagen">`;
+
+        box.style.animation = "none";
+        void box.offsetWidth;
+        box.style.animation = "rebote 0.8s ease-out";
+
+        pos++;
+
+        if (pos >= imagenes.length) {
+            orden = [...Array(imagenes.length).keys()];
+            mezclar(orden);
+            pos = 0;
+            await set(ordenRef, orden);
+        }
+
+        await set(posRef, pos);
+    }
+
+    window.onload = cargarImagen;
+</script>
+</head>
+
+<body>
+    <div id="fondo"></div>
+    <div id="imgBox">Cargando...</div>
+</body>
+</html>
