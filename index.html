@@ -51,9 +51,7 @@
       100% { transform: scale(1); filter: blur(0); }
   }
 
-  /* ------------------------ */
-  /*     FLIP 360° ANIMATION  */
-  /* ------------------------ */
+  /* Animación flip 360° */
   @keyframes flipReveal {
     0% {
         transform: rotateY(0deg);
@@ -78,7 +76,7 @@
       transform-style: preserve-3d;
   }
 
-  /* Caja que contiene la imagen */
+  /* Caja contenedora */
   #imgBox {
       max-width: 90%;
       max-height: 80%;
@@ -92,7 +90,6 @@
       overflow: hidden;
       animation: rebote 0.8s ease-out;
   }
-
 </style>
 
 <!-- Google Analytics -->
@@ -104,9 +101,7 @@
   gtag('config', 'G-3GFTY2SWSM');
 </script>
 
-<!-- ===================== -->
-<!--   FIREBASE + LÓGICA   -->
-<!-- ===================== -->
+<!-- FIREBASE + LÓGICA -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
     import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
@@ -143,7 +138,7 @@
     ];
 
     function mezclar(array) {
-        for (let i = array.length - i > 0; i--) {
+        for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
         }
@@ -172,10 +167,9 @@
 
         const ruta = imagenes[orden[pos]];
 
-        /* Imagen con animación 360° */
         box.innerHTML = `<img src="${ruta}" class="flip-img" alt="pose">`;
 
-        /* Reiniciar animación rebote */
+        /* Reinicia animación del rebote */
         box.style.animation = "none";
         void box.offsetWidth;
         box.style.animation = "rebote 0.8s ease-out";
@@ -202,3 +196,4 @@
     <div id="imgBox">Cargando...</div>
 </body>
 </html>
+
