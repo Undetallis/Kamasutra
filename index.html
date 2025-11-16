@@ -1,15 +1,100 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <style>
-    img {
-      filter: grayscale(100%);
-    }
-  </style>
-</head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Kamasutra</title>
+
+<style>
+  /* TODAS LAS IMÁGENES EN BLANCO Y NEGRO */
+  img {
+    filter: grayscale(100%);
+  }
+
+  body {
+      margin: 0;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: black;
+      font-family: "Arial", sans-serif;
+      padding: 20px;
+      box-sizing: border-box;
+  }
+
+  #fondo {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 110%;
+      width: 110%;
+      background-image: url('assets/fondo.jpg');
+      background-size: cover;
+      background-position: center;
+      animation: fondoMovimiento 2.5s infinite ease-in-out alternate;
+      filter: blur(4px) brightness(0.8);
+      z-index: -1;
+  }
+
+  @keyframes fondoMovimiento {
+      0% { transform: scale(1.02) translate(-8px, -5px); }
+      100% { transform: scale(1.06) translate(6px, 5px); }
+  }
+
+  @keyframes rebote {
+      0%   { opacity: 0; transform: scale(0.6); filter: blur(4px); }
+      40%  { opacity: 1; transform: scale(1.08); }
+      70%  { transform: scale(0.94); }
+      100% { transform: scale(1); filter: blur(0); }
+  }
+
+  /* ------------------------ */
+  /*     FLIP ANIMATION       */
+  /* ------------------------ */
+  @keyframes flipReveal {
+      0% {
+          transform: rotateY(90deg);
+          opacity: 0;
+      }
+      60% {
+          transform: rotateY(-20deg);
+          opacity: 1;
+      }
+      100% {
+          transform: rotateY(0deg);
+          opacity: 1;
+      }
+  }
+
+  /* Caja que contiene la imagen */
+  #imgBox {
+      max-width: 90%;
+      max-height: 80%;
+      padding: 20px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.45);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      animation: rebote 0.8s ease-out;
+  }
+
+  /* Imagen con efecto de flip */
+  .flip-img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 14px;
+      object-fit: contain;
+      animation: flipReveal 0.8s ease forwards;
+      backface-visibility: hidden;
+      transform-style: preserve-3d;
+  }
+</style>
 
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-3GFTY2SWSM"></script>
@@ -20,67 +105,6 @@
   gtag('config', 'G-3GFTY2SWSM');
 </script>
 
-<style>
-    body {
-        margin: 0;
-        overflow: hidden;
-        height: 100vh;
-        width: 100vw;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: black;
-        font-family: "Arial", sans-serif;
-        padding: 20px;
-        box-sizing: border-box;
-    }
-    #fondo {
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 110%;
-        width: 110%;
-        background-image: url('assets/fondo.jpg');
-        background-size: cover;
-        background-position: center;
-        animation: fondoMovimiento 2.5s infinite ease-in-out alternate;
-        filter: blur(4px) brightness(0.8);
-        z-index: -1;
-    }
-    @keyframes fondoMovimiento {
-        0% { transform: scale(1.02) translate(-8px, -5px); }
-        100% { transform: scale(1.06) translate(6px, 5px); }
-    }
-    @keyframes rebote {
-        0%   { opacity: 0; transform: scale(0.6); filter: blur(4px); }
-        40%  { opacity: 1; transform: scale(1.08); }
-        70%  { transform: scale(0.94); }
-        100% { transform: scale(1); filter: blur(0); }
-    }
-
-    /* ----- CONTENEDOR DE LA IMAGEN ----- */
-    #imgBox {
-        max-width: 90%;
-        max-height: 80%;
-        padding: 20px;
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 0 30px rgba(0,0,0,0.45);
-        animation: rebote 0.8s ease-out;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-    }
-
-    #imgBox img {
-        max-width: 100%;
-        max-height: 100%;
-        border-radius: 14px;
-        object-fit: contain;
-    }
-</style>
-
 <!-- ===================== -->
 <!--   FIREBASE + LÓGICA   -->
 <!-- ===================== -->
@@ -89,97 +113,36 @@
     import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyD5_UFCwf8ljYMlaDBNmtT5ju0MgNIsTn0",
-  authDomain: "kamasutra-7192e.firebaseapp.com",
-  databaseURL: "https://kamasutra-7192e-default-rtdb.firebaseio.com",
-  projectId: "kamasutra-7192e",
-  storageBucket: "kamasutra-7192e.firebasestorage.app",
-  messagingSenderId: "450416756888",
-  appId: "1:450416756888:web:9e6133833d2721d14028ed",
-  measurementId: "G-1K30TQB2CQ"
+        apiKey: "AIzaSyD5_UFCwf8ljYMlaDBNmtT5ju0MgNIsTn0",
+        authDomain: "kamasutra-7192e.firebaseapp.com",
+        databaseURL: "https://kamasutra-7192e-default-rtdb.firebaseio.com",
+        projectId: "kamasutra-7192e",
+        storageBucket: "kamasutra-7192e.firebasestorage.app",
+        messagingSenderId: "450416756888",
+        appId: "1:450416756888:web:9e6133833d2721d14028ed",
+        measurementId: "G-1K30TQB2CQ"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    /* ------------------------------------ */
-    /*  AQUI PONES TUS 50 IMÁGENES EN ASSETS */
-    /* ------------------------------------ */
     const imagenes = [
-        "assets/img1.png",
-"assets/img2.png",
-"assets/img3.png",
-"assets/img4.png",
-"assets/img5.png",
-"assets/img6.png",
-"assets/img7.png",
-"assets/img8.png",
-"assets/img9.png",
-"assets/img10.png",
-"assets/img11.png",
-"assets/img12.png",
-"assets/img13.png",
-"assets/img14.png",
-"assets/img15.png",
-"assets/img16.png",
-"assets/img17.png",
-"assets/img18.png",
-"assets/img19.png",
-"assets/img20.png",
-"assets/img21.png",
-"assets/img22.png",
-"assets/img23.png",
-"assets/img24.png",
-"assets/img25.png",
-"assets/img26.png",
-"assets/img27.png",
-"assets/img28.png",
-"assets/img29.png",
-"assets/img30.png",
-"assets/img31.png",
-"assets/img32.png",
-"assets/img33.png",
-"assets/img34.png",
-"assets/img35.png",
-"assets/img36.png",
-"assets/img37.png",
-"assets/img38.png",
-"assets/img39.png",
-"assets/img40.png",
-"assets/img41.png",
-"assets/img42.png",
-"assets/img43.png",
-"assets/img44.png",
-"assets/img45.png",
-"assets/img46.png",
-"assets/img47.png",
-"assets/img48.png",
-"assets/img49.png",
-"assets/img50.png",
-"assets/img51.png",
-"assets/img52.png",
-"assets/img53.png",
-"assets/img54.png",
-"assets/img55.png",
-"assets/img56.png",
-"assets/img57.png",
-"assets/img58.png",
-"assets/img59.png",
-"assets/img60.png",
-"assets/img61.png",
-"assets/img62.png",
-"assets/img63.png",
-"assets/img64.png",
-"assets/img65.png",
-"assets/img66.png",
-"assets/img67.png",
-"assets/img68.png",
-"assets/img69.png",
-"assets/img70.png",
-       
+        "assets/img1.png","assets/img2.png","assets/img3.png","assets/img4.png","assets/img5.png",
+        "assets/img6.png","assets/img7.png","assets/img8.png","assets/img9.png","assets/img10.png",
+        "assets/img11.png","assets/img12.png","assets/img13.png","assets/img14.png","assets/img15.png",
+        "assets/img16.png","assets/img17.png","assets/img18.png","assets/img19.png","assets/img20.png",
+        "assets/img21.png","assets/img22.png","assets/img23.png","assets/img24.png","assets/img25.png",
+        "assets/img26.png","assets/img27.png","assets/img28.png","assets/img29.png","assets/img30.png",
+        "assets/img31.png","assets/img32.png","assets/img33.png","assets/img34.png","assets/img35.png",
+        "assets/img36.png","assets/img37.png","assets/img38.png","assets/img39.png","assets/img40.png",
+        "assets/img41.png","assets/img42.png","assets/img43.png","assets/img44.png","assets/img45.png",
+        "assets/img46.png","assets/img47.png","assets/img48.png","assets/img49.png","assets/img50.png",
+        "assets/img51.png","assets/img52.png","assets/img53.png","assets/img54.png","assets/img55.png",
+        "assets/img56.png","assets/img57.png","assets/img58.png","assets/img59.png","assets/img60.png",
+        "assets/img61.png","assets/img62.png","assets/img63.png","assets/img64.png","assets/img65.png",
+        "assets/img66.png","assets/img67.png","assets/img68.png","assets/img69.png","assets/img70.png"
     ];
 
-    /* Mezclar */
     function mezclar(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -210,8 +173,10 @@
 
         const ruta = imagenes[orden[pos]];
 
-        box.innerHTML = `<img src="${ruta}" alt="imagen">`;
+        /* Aquí aplicamos la animación flip */
+        box.innerHTML = `<img src="${ruta}" class="flip-img" alt="pose">`;
 
+        /* Reiniciar animación rebote */
         box.style.animation = "none";
         void box.offsetWidth;
         box.style.animation = "rebote 0.8s ease-out";
@@ -230,6 +195,7 @@
 
     window.onload = cargarImagen;
 </script>
+
 </head>
 
 <body>
